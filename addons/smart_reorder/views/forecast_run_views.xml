@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_forecast_run_tree" model="ir.ui.view">
+        <field name="name">smart.forecast.run.tree</field>
+        <field name="model">smart.forecast.run</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="state == 'failed'" decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="trigger"/>
+                <field name="horizon_weeks"/>
+                <field name="product_count"/>
+                <field name="run_duration"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_forecast_run_form" model="ir.ui.view">
+        <field name="name">smart.forecast.run.form</field>
+        <field name="model">smart.forecast.run</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_execute" type="object" string="Re-run" class="btn-primary"/>
+                    <button name="%(action_report_forecast)d" type="action" string="Print"
+                            invisible="state != 'done'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group>
+                            <field name="trigger"/>
+                            <field name="horizon_weeks"/>
+                            <field name="lead_time_weeks"/>
+                            <field name="safety_weeks"/>
+                        </group>
+                        <group>
+                            <field name="product_count"/>
+                            <field name="run_duration"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group invisible="not error_message">
+                        <field name="error_message" nolabel="1" colspan="2"/>
+                    </group>
+                    <notebook>
+                        <page string="Suggestions">
+                            <field name="line_ids" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_forecast_run" model="ir.actions.act_window">
+        <field name="name">Forecast Runs</field>
+        <field name="res_model">smart.forecast.run</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

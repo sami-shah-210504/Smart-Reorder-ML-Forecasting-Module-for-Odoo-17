@@ -1,0 +1,21 @@
+{
+    'name': 'Smart Reorder — ML Demand Forecasting',
+    'version': '17.0.1.0.0',
+    'summary': 'ML-powered reorder suggestions from sales history',
+    'category': 'Inventory',
+    'license': 'LGPL-3',
+    'depends': ['base', 'sale', 'stock', 'purchase'],
+    'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'data/cron.xml',
+        'report/forecast_report.xml',
+        'views/forecast_line_views.xml',
+        'views/forecast_run_views.xml',
+        'views/forecast_wizard_views.xml',
+        'views/product_views.xml',
+        'views/menus.xml',
+    ],
+    'application': True,
+    'installable': True,
+}

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_forecast" model="ir.actions.report">
+        <field name="name">Forecast Summary</field>
+        <field name="model">smart.forecast.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">smart_reorder.report_forecast</field>
+        <field name="report_file">smart_reorder.report_forecast</field>
+        <field name="binding_model_id" ref="model_smart_forecast_run"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_forecast">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Forecast Summary: <span t-field="doc.name"/></h2>
+                        <p>
+                            Trigger: <span t-field="doc.trigger"/> |
+                            Horizon: <span t-field="doc.horizon_weeks"/> weeks |
+                            Model: <span t-esc="doc.line_ids[:1].model_version"/>
+                        </p>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-end">Forecast/wk</th>
+                                    <th class="text-end">Interval</th>
+                                    <th class="text-end">On hand</th>
+                                    <th class="text-end">Incoming</th>
+                                    <th class="text-end">Suggested</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.line_ids" t-as="l">
+                                    <td><span t-field="l.product_id"/></td>
+                                    <td class="text-end"><span t-esc="'%.1f' % l.weekly_forecast"/></td>
+                                    <td class="text-end"><span t-esc="'%.1f - %.1f' % (l.forecast_lo, l.forecast_hi)"/></td>
+                                    <td class="text-end"><span t-esc="l.qty_available"/></td>
+                                    <td class="text-end"><span t-esc="l.incoming_qty"/></td>
+                                    <td class="text-end"><strong t-esc="l.suggested_qty"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

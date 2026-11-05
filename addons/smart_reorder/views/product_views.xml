@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_template_form_forecast" model="ir.ui.view">
+        <field name="name">product.template.form.forecast</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Forecast" groups="smart_reorder.group_smart_reorder_manager">
+                    <group>
+                        <field name="forecast_qty"/>
+                        <field name="forecast_updated"/>
+                        <field name="forecast_run_id"/>
+                    </group>
+                    <button name="action_view_forecast_lines" type="object"
+                            string="View forecast history" class="btn-link"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

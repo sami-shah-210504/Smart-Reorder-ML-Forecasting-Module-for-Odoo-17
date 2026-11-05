@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_smart_reorder_manager" model="res.groups">
+        <field name="name">Smart Reorder Manager</field>
+        <field name="category_id" ref="base.module_category_inventory_purchase"/>
+        <field name="implied_ids" eval="[(4, ref('purchase.group_purchase_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+    <record id="rule_forecast_run_company" model="ir.rule">
+        <field name="name">Forecast run: multi-company</field>
+        <field name="model_id" ref="model_smart_forecast_run"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_forecast_line_company" model="ir.rule">
+    <field name="name">Forecast line: multi-company</field>
+    <field name="model_id" ref="model_smart_forecast_line"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

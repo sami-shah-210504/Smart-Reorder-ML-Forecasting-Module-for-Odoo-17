@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_smart_reorder_root" name="Smart Reorder" sequence="60"
+              groups="smart_reorder.group_smart_reorder_manager"/>
+    <menuitem id="menu_suggestions" name="Suggestions" parent="menu_smart_reorder_root"
+              action="action_forecast_line" sequence="10"/>
+    <menuitem id="menu_runs" name="Forecast Runs" parent="menu_smart_reorder_root"
+              action="action_forecast_run" sequence="20"/>
+    <menuitem id="menu_run_forecast" name="Run Forecast" parent="menu_smart_reorder_root"
+              action="action_forecast_wizard" sequence="30"/>
+</odoo>

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_forecast_run_mgr,forecast.run.manager,model_smart_forecast_run,smart_reorder.group_smart_reorder_manager,1,1,1,1
+access_forecast_line_mgr,forecast.line.manager,model_smart_forecast_line,smart_reorder.group_smart_reorder_manager,1,1,1,1
+access_forecast_wizard_mgr,forecast.wizard.manager,model_smart_forecast_wizard,smart_reorder.group_smart_reorder_manager,1,1,1,1

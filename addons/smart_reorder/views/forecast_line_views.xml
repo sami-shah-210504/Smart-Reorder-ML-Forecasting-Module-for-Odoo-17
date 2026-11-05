@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_forecast_line_tree" model="ir.ui.view">
+        <field name="name">smart.forecast.line.tree</field>
+        <field name="model">smart.forecast.line</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0">
+                <field name="run_id" optional="hide"/>
+                <field name="product_id"/>
+                <field name="weekly_forecast" string="Forecast/wk"/>
+                <field name="forecast_lo" optional="hide"/>
+                <field name="forecast_hi" optional="hide"/>
+                <field name="qty_available"/>
+                <field name="incoming_qty"/>
+                <field name="suggested_qty"
+                       decoration-success="suggested_qty == 0"
+                       decoration-danger="suggested_qty > 0"/>
+                <field name="suggested_value" sum="Total"/>
+                <field name="model_version" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_forecast_line_form" model="ir.ui.view">
+        <field name="name">smart.forecast.line.form</field>
+        <field name="model">smart.forecast.line</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="run_id"/>
+                            <field name="product_id"/>
+                            <field name="model_version"/>
+                        </group>
+                        <group>
+                            <field name="weekly_forecast"/>
+                            <field name="forecast_lo"/>
+                            <field name="forecast_hi"/>
+                            <field name="qty_available"/>
+                            <field name="incoming_qty"/>
+                            <field name="suggested_qty"/>
+                            <field name="suggested_value"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_forecast_line_search" model="ir.ui.view">
+        <field name="name">smart.forecast.line.search</field>
+        <field name="model">smart.forecast.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_id"/>
+                <filter name="to_order" string="To Order" domain="[('suggested_qty', '&gt;', 0)]"/>
+                <group expand="0">
+                    <filter name="group_run" string="Run" context="{'group_by': 'run_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_forecast_line" model="ir.actions.act_window">
+        <field name="name">Suggestions</field>
+        <field name="res_model">smart.forecast.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_to_order': 1}</field>
+    </record>
+</odoo>
