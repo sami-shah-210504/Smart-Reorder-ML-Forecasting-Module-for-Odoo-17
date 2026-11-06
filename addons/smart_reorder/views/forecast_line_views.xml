@@ -5,6 +5,9 @@
         <field name="model">smart.forecast.line</field>
         <field name="arch" type="xml">
             <tree create="0" edit="0">
+                <header>
+                    <button name="action_create_purchase_orders" type="object" string="Create RFQs"/>
+                </header>
                 <field name="run_id" optional="hide"/>
                 <field name="product_id"/>
                 <field name="weekly_forecast" string="Forecast/wk"/>
@@ -16,6 +19,7 @@
                        decoration-success="suggested_qty == 0"
                        decoration-danger="suggested_qty > 0"/>
                 <field name="suggested_value" sum="Total"/>
+                <field name="purchase_order_id"/>
                 <field name="model_version" optional="hide"/>
             </tree>
         </field>
@@ -41,6 +45,7 @@
                             <field name="incoming_qty"/>
                             <field name="suggested_qty"/>
                             <field name="suggested_value"/>
+                            <field name="purchase_order_id"/>
                         </group>
                     </group>
                 </sheet>
@@ -54,7 +59,8 @@
         <field name="arch" type="xml">
             <search>
                 <field name="product_id"/>
-                <filter name="to_order" string="To Order" domain="[('suggested_qty', '&gt;', 0)]"/>
+                <filter name="to_order" string="To Order"
+                        domain="[('suggested_qty', '&gt;', 0), ('purchase_order_id', '=', False)]"/>
                 <group expand="0">
                     <filter name="group_run" string="Run" context="{'group_by': 'run_id'}"/>
                 </group>

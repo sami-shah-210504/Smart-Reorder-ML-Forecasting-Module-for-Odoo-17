@@ -49,3 +49,25 @@ class TestForecastLogic(TransactionCase):
         self.assertEqual(self.run_rec.state, 'done')
         self.assertEqual(len(self.run_rec.line_ids), 1)
         self.assertEqual(self.tmpl.forecast_qty, 5.0)
+
+    def test_create_rfq_groups_by_vendor_and_is_idempotent(self):
+        vendor = self.env['res.partner'].create({'name': 'SR Vendor'})
+        self.env['product.supplierinfo'].create({
+            'partner_id': vendor.id, 'product_tmpl_id': self.tmpl.id,
+            'price': 2.0, 'min_qty': 0})
+        line = self._line(10.0, 15.0)                # suggests 15
+        line.action_create_purchase_orders()
+
+        po = line.purchase_order_id
+        self.assertTrue(po)
+        self.assertEqual(po.partner_id, vendor)
+        self.assertEqual(po.order_line.product_qty, 15.0)
+
+        line.action_create_purchase_orders()         # second click
+        self.assertEqual(self.env['purchase.order'].search_count(
+            [('partner_id', '=', vendor.id)]), 1)
+
+    def test_create_rfq_skips_product_without_vendor(self):
+        line = self._line(10.0, 15.0)
+        line.action_create_purchase_orders()
+        self.assertFalse(line.purchase_order_id)

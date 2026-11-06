@@ -1,14 +1,24 @@
+import json
+from pathlib import Path
+
 import joblib
 import numpy as np
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from features import make_features
 from features import recursive_forecast
 
 app = FastAPI(title='Smart Reorder Forecast Service')
-model = joblib.load('model.pkl')
+
+HERE = Path(__file__).parent
+model = joblib.load(HERE / 'model.pkl')
 MODEL_VERSION = 'ridge-lag-v1'
+
+try:
+    with open(HERE / 'interval.json') as f:
+        BAND = json.load(f)
+except FileNotFoundError:
+    BAND = {'lo': 0.8, 'hi': 1.25}      # uncalibrated fallback
 
 
 class Item(BaseModel):
@@ -23,7 +33,7 @@ class ForecastRequest(BaseModel):
 
 @app.get('/health')
 def health():
-    return {'ok': True, 'model_version': MODEL_VERSION}
+    return {'ok': True, 'model_version': MODEL_VERSION, 'band': BAND}
 
 
 @app.post('/v1/forecast')
@@ -38,20 +48,8 @@ def forecast(req: ForecastRequest):
         preds.append({
             'product_tmpl_id': item.product_tmpl_id,
             'weekly_forecast': m,
-            'forecast_lo': m * 0.8,
-            'forecast_hi': m * 1.25,
-            'model_version': MODEL_VERSION,
-        })
-        for _ in range(req.horizon_weeks):
-            p = max(0.0, float(model.predict(np.array([make_features(hist)]))[0]))
-            yhat.append(p)
-            hist.append(p)
-        m = float(np.mean(yhat))
-        preds.append({
-            'product_tmpl_id': item.product_tmpl_id,
-            'weekly_forecast': m,
-            'forecast_lo': m * 0.8,
-            'forecast_hi': m * 1.25,
+            'forecast_lo': m * BAND['lo'],
+            'forecast_hi': m * BAND['hi'],
             'model_version': MODEL_VERSION,
         })
     return {'version': 1, 'predictions': preds}
